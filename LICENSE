@@ -1,0 +1,88 @@
+著作權所有 © 2026 [著作權人姓名或單位名稱]
+Copyright © 2026 [Copyright Holder]
+
+保留所有權利 / All Rights Reserved
+
+---
+
+## 中文
+
+本儲存庫之原始碼、設計、文件及其他內容（以下合稱「本作品」）之著作權
+均由上述著作權人保留，未經事前書面同意，任何人不得為下列行為：
+
+1. 重製、散布、公開傳輸或公開展示本作品之全部或一部
+2. 修改、改作、翻譯或以本作品為基礎製作衍生著作
+3. 將本作品之全部或一部用於商業用途
+4. 將本作品部署於任何公開或內部之正式服務環境
+
+在著作權法允許之合理使用範圍內，得為個人研究、教學或評論目的引述本作品，
+惟應註明出處。
+
+### 專案性質聲明
+
+本作品為設計原型（design prototype），目前處於測試階段，僅供功能與介面
+之概念展示。儲存庫內所有人名、員工編號、機構名稱、評量內容及統計數字
+均為虛構，不代表任何真實之評量結果、個人資料或機構資訊。
+
+本作品不構成可供臨床或行政決策使用之系統，著作權人對於因使用本作品所生
+之任何直接或間接損害，不負任何責任。
+
+### 第三方元件
+
+本作品使用之第三方開源函式庫（包含但不限於 React、Tailwind CSS、Recharts、
+lucide-react）各自適用其原始授權條款，不受本聲明限制。
+
+### 授權洽詢
+
+如需引用、參考、改作或部署本作品，歡迎來信洽談：
+
+- 聯絡人：[姓名]
+- 電子郵件：[聯絡信箱]
+- 所屬單位：[單位名稱]
+
+著作權人保留隨時變更本授權條款之權利。
+
+---
+
+## English
+
+All rights in the source code, design, documentation, and other materials in
+this repository (the "Work") are reserved by the copyright holder named above.
+Without prior written permission, no person may:
+
+1. Reproduce, distribute, publicly transmit, or publicly display the Work,
+   in whole or in part
+2. Modify, adapt, translate, or create derivative works based on the Work
+3. Use the Work, in whole or in part, for commercial purposes
+4. Deploy the Work in any public or internal production environment
+
+Quotation for personal research, teaching, or commentary is permitted within
+the scope of fair use, provided the source is attributed.
+
+### Nature of this project
+
+This Work is a design prototype currently in a testing phase, intended solely
+to demonstrate functionality and interface concepts. All names, staff IDs,
+institution names, evaluation content, and statistics in this repository are
+fictional and do not represent any real assessment result, personal data, or
+institutional information.
+
+This Work does not constitute a system suitable for clinical or administrative
+decision-making. The copyright holder accepts no liability for any direct or
+indirect damages arising from its use.
+
+### Third-party components
+
+Third-party open-source libraries used by this Work (including but not limited
+to React, Tailwind CSS, Recharts, and lucide-react) remain subject to their
+own respective licenses and are not covered by this notice.
+
+### Licensing enquiries
+
+To cite, reference, adapt, or deploy this Work, please get in touch:
+
+- Contact: [Name]
+- Email: [Email address]
+- Affiliation: [Institution]
+
+The copyright holder reserves the right to change these terms at any time.

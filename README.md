@@ -83,4 +83,14 @@ React 18、TypeScript、Tailwind CSS、Recharts、lucide-react。以 Parcel 打�
 
 ## 授權
 
-請依貴單位需求補上授權條款。
+**保留所有權利（All Rights Reserved）。** 完整條款見 [LICENSE](LICENSE)。
+
+本專案目前處於測試階段，尚未採用開源授權。未經著作權人事前書面同意，不得重製、
+修改、散布本作品，或將其部署於任何正式服務環境。
+
+在著作權法合理使用範圍內，得為個人研究、教學或評論目的引述本作品，並請註明出處。
+
+如需引用、參考、改作或部署，歡迎依 [LICENSE](LICENSE) 中的聯絡方式來信洽談。
+
+本作品使用之第三方開源函式庫（React、Tailwind CSS、Recharts、lucide-react 等）
+各自適用其原始授權條款，不受本聲明限制。

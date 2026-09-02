@@ -1,0 +1,4 @@
+﻿log_id,timestamp,actor_staff_id,action_zh,action_en,target,device,ip
+L001,2026-09-02 09:41,M70001,匯出全院評量資料 342 筆,Exported 342 records,export:hospital,MacBook Pro 14 / macOS 15.4 / Chrome 141,10.21.44.108
+L002,2026-09-02 08:15,M70002,下載外科部評量清單 86 筆,Downloaded 86 Surgery records,export:SU,iPad Pro 11 / iPadOS 18.3 / Safari,10.21.51.66
+L003,2026-09-01 22:07,M70000,批次更新職稱 27 人,Batch-updated 27 titles,batch:title,ThinkPad X1 / Windows 11 / Edge 132,203.74.12.91

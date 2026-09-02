@@ -2,6 +2,22 @@
 
 本檔案記錄此原型的重要變更。版本編號採 [語意化版本](https://semver.org/lang/zh-TW/)。
 
+## [0.3.3] - 2026-09-02
+
+### 修正
+
+- **修正獨立型 Apps Script 專案無法讀取試算表的問題。** `Code.gs` 原本只用 `SpreadsheetApp.getActiveSpreadsheet()` 取得試算表，該方法僅在腳本綁定於試算表時有效。若腳本是從 script.google.com 直接建立（獨立型），該方法回傳 null，呼叫端點會得到 `TypeError: Cannot read properties of null (reading 'getSheetByName')`。
+  - 新增 `SPREADSHEET_ID` 設定項，獨立型腳本填入試算表 ID 即可運作
+  - 新增 `getSpreadsheet()` 統一取得試算表，綁定型腳本維持留空自動判斷
+  - 未設定 ID 且非綁定型時，改為拋出中文說明而非隱晦的型別錯誤
+
+### 新增
+
+- `testConnection()` 診斷函式，可在編輯器直接執行以確認試算表連線與工作表清單
+- `setupSheets()` 在獨立型腳本執行時改寫入「執行紀錄」，不再因缺少試算表介面而失敗
+
+---
+
 ## [0.3.2] - 2026-09-02
 
 ### 修正

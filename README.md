@@ -56,7 +56,9 @@
 
 1. 建立一份新的 Google 試算表
 2. 擴充功能 → Apps Script，把 `apps-script/Code.gs` 貼上並存檔
-3. 重新整理試算表，用新出現的「平台資料」選單執行「建立所有工作表」
+   - 若腳本是從 script.google.com 直接建立（獨立型），必須在 `Code.gs` 最上方的 `SPREADSHEET_ID` 填入試算表 ID，否則會出現 `Cannot read properties of null` 錯誤
+   - 從試算表選單建立的腳本（綁定型）則留空即可
+3. 重新整理試算表，用新出現的「平台資料」選單執行「建立所有工作表」；獨立型腳本請直接在編輯器執行 `setupSheets`
 4. 把 `data/` 目錄下的 CSV 逐一貼入對應的工作表
 5. Apps Script → 部署 → 新增部署作業 → 網頁應用程式，取得網址
 6. 在 `index.html` 的 `<head>` 中填入該網址：

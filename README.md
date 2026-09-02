@@ -43,6 +43,53 @@
 
 此為送出前的最後一道過濾，正式系統仍須在表單填寫階段就攔截，並搭配詞典比對或命名實體辨識作為第二道。
 
+## 資料來源
+
+平台支援兩種資料來源，由 `index.html` 中的設定決定：
+
+| 設定 | 資料來源 | 適用情境 |
+| --- | --- | --- |
+| 留空（預設） | 內建示範資料 | 靜態展示、GitHub Pages |
+| `window.__SHEETS_API__` | Google Sheets | 以真實欄位結構搭配假資料進行測試 |
+
+### Google Sheets 設定步驟
+
+1. 建立一份新的 Google 試算表
+2. 擴充功能 → Apps Script，把 `apps-script/Code.gs` 貼上並存檔
+3. 重新整理試算表，用新出現的「平台資料」選單執行「建立所有工作表」
+4. 把 `data/` 目錄下的 CSV 逐一貼入對應的工作表
+5. Apps Script → 部署 → 新增部署作業 → 網頁應用程式，取得網址
+6. 在 `index.html` 的 `<head>` 中填入該網址：
+
+```html
+<script>
+  window.__SHEETS_API__ = "https://script.google.com/macros/s/XXXX/exec";
+</script>
+```
+
+連線成功後畫面右下角會顯示資料來源狀態與筆數；連線失敗會自動退回內建示範資料，功能不中斷。
+
+### 資料表結構
+
+`data/` 目錄提供 12 張工作表的欄位範本與假資料：
+
+| 工作表 | 內容 |
+| --- | --- |
+| `Users` | 使用者、職稱、職級、所屬與負責科部、角色 |
+| `Depts` | 科部與次專科，以 `parent_code` 建立父子關聯 |
+| `Evaluations` | 評量主表，含七項目尺規、信賴授權層級、質性回饋、實習期間註記 |
+| `Rotations` | 實習排程起訖日與週數 |
+| `Officers` | 科部承辦人與交接紀錄 |
+| `DeptWeights` | 各科配分規則，依年級與學年區分 |
+| `Scores` | 學員各科與次專科得分 |
+| `GlobalScores` | 教學部分數、額外加扣分與總成績比例 |
+| `RubricFiles` | 配分表 PDF 版本 |
+| `ContentPages` | 科別配分設定與延伸網頁的啟用狀態 |
+| `AuditLogs` | 稽核軌跡，含裝置型號與 IP |
+| `ContentTasks` | 由儀表板洞察建立的教材待辦 |
+
+科部以代碼串接（如 `IM` 內科部、`IM-CV` 心臟系），次專科查詢用前綴比對。
+
 ## 部署
 
 ### 靜態託管（GitHub Pages、Netlify、Vercel）
@@ -73,6 +120,15 @@ GitHub Pages 設定方式：儲存庫 Settings → Pages → Source 選 `Deploy 
 
 React 18、TypeScript、Tailwind CSS、Recharts、lucide-react。以 Parcel 打包並內嵌為單一 HTML 檔。
 
+## 安全須知
+
+**本專案不得用於存放真實的學生評量資料。**
+
+- 權限判斷目前在前端與 Apps Script 參數，可被繞過。真實資料必須由後端在驗證身分後決定回傳範圍
+- Google Sheets 沒有欄位層級權限、沒有存取稽核，也無法做多機構資料隔離
+- 靜態託管無法保護任何憑證。API 金鑰、試算表網址一旦寫入前端即等同公開
+- 若要接真實資料，應改用具備身分驗證的後端與資料庫，並另建私有儲存庫
+
 ## 已知限制
 
 - 所有資料為前端寫死的示範資料，沒有後端與資料庫
@@ -80,6 +136,10 @@ React 18、TypeScript、Tailwind CSS、Recharts、lucide-react。以 Parcel 打�
 - 中文姓名的去識別化偵測不完備，無稱謂與前綴的裸姓名無法攔截
 - 次專科權重目前為固定比例，實際計算方式待配分表確認
 - 密碼重設、檔案上傳、PDF 下載、Excel 匯出皆為示範互動，未實際執行
+
+## 修改紀錄
+
+各版本的變更內容記於 [CHANGELOG.md](CHANGELOG.md)。
 
 ## 授權
 

@@ -1,0 +1,8 @@
+﻿eval_id,visit_datetime,apply_datetime,eval_datetime,trainee_staff_id,teacher_staff_id,dept_code,complexity,entrust_level,item_interview,item_physical,item_procedure,item_counseling,item_judgment,item_organization,item_professional,praise,suggestion,status,in_rotation_flag
+E0001,2026-09-01 18:59,2026-09-01 19:00,2026-09-01 19:07,S90004,T80002,IM-CV,PGY結訓時應能獨立處理,4,Meet,Meet,Above,Meet,Above,Meet,Above,問診由開放式問題開始，時序性釐清清楚；衛教用語淺白。,鑑別診斷可再拉開廣度，並補上紅旗症狀的排除。,已評量,TRUE
+E0002,2026-09-01 14:20,2026-09-01 14:25,2026-09-01 16:45,S90001,T80001,IM-CH,專家挑戰情境,5,Above,Above,Above,Meet,Above,Meet,Above,身體診察無遺漏重要項目，注重病人隱私；無菌操作良好。,可嘗試在事後督導下獨立完成整個流程。,已評量,TRUE
+E0003,2026-09-01 09:12,2026-09-01 09:20,,S90002,T80003,SU-GS,PGY結訓時應能獨立處理,,,,,,,,,,,待評量,TRUE
+E0004,2026-08-28 10:30,2026-08-28 10:40,,S90003,T80004,IM-NE,住院醫師結訓時應能獨立處理,,,,,,,,,,,待評量,FALSE
+E0005,2026-08-30 09:20,2026-08-30 09:30,2026-08-30 11:02,S90001,T80001,IM-CH,PGY結訓時應能獨立處理,4,Above,Meet,Meet,Above,Above,Below,Above,問診層次分明，能主動確認病人理解程度。,多筆待辦並行時的優先序判斷可再精進，建議使用結構化交班工具。,已評量,TRUE
+E0006,2026-08-26 16:10,2026-08-26 16:15,2026-08-27 08:45,S90002,T80001,IM-CV,醫學生畢業時應能獨立處理,3,Meet,Meet,Below,Meet,Meet,Meet,Above,態度誠懇，對病人解釋耐心。,心臟理學檢查步驟仍需依序完成，建議在教師直接指導下再練習兩次。,已評量,TRUE
+E0007,2026-08-22 11:40,2026-08-22 11:45,,S90002,T80003,SU-OR,醫學生畢業時應能獨立處理,,,,,,,,,,,未填寫,TRUE

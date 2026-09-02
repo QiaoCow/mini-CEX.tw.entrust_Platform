@@ -1,0 +1,7 @@
+﻿page_id,kind,name_zh,name_en,enabled,body_url
+P001,module,內科部配分設定,Internal Medicine weighting,TRUE,
+P002,module,外科部配分設定,Surgery weighting,TRUE,
+P003,module,中醫部配分設定,TCM weighting,TRUE,
+P004,page,mini-CEX 評量指引,mini-CEX assessment guide,TRUE,
+P005,page,信賴授權層級說明,Entrustment levels explained,TRUE,
+P006,page,常見回饋語庫,Feedback phrase library,FALSE,

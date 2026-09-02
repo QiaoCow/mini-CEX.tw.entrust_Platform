@@ -1,0 +1,10 @@
+﻿weight_id,dept_code,track,academic_year,item_zh,item_en,weight_pct,source_zh,source_en
+W001,IM,六年級,2026,mini-CEX 臨床評量,mini-CEX assessment,40,本平台自動帶入,Auto-filled
+W002,IM,六年級,2026,病例報告,Case report,20,科部登錄,Department
+W003,IM,六年級,2026,教學門診參與,Teaching clinic,15,科部登錄,Department
+W004,IM,六年級,2026,值班表現,On-call performance,15,科部登錄,Department
+W005,IM,六年級,2026,出勤與專業態度,Attendance,10,科部登錄,Department
+W006,SU,六年級,2026,mini-CEX 臨床評量,mini-CEX assessment,40,本平台自動帶入,Auto-filled
+W007,SU,六年級,2026,手術見習,OR observation,25,科部登錄,Department
+W008,SU,六年級,2026,病例報告,Case report,20,科部登錄,Department
+W009,SU,六年級,2026,出勤與專業態度,Attendance,15,科部登錄,Department

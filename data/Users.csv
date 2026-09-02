@@ -1,0 +1,12 @@
+﻿user_id,staff_id,name_zh,name_en,email,title_zh,title_en,rank,dept_code,scope_dept_code,roles,grade,active
+U001,S90001,王子安,Wang Tzu-An,wang01@example.edu,醫學生,Medical student,MS,IM,,student,六年級,TRUE
+U002,S90002,陳柏宇,Chen Po-Yu,chen02@example.edu,醫學生,Medical student,MS,SU,,student,五年級,TRUE
+U003,S90003,李映彤,Li Ying-Tung,li03@example.edu,醫學生,Medical student,MS,IM,,student,六年級,TRUE
+U004,S90004,吳庭萱,Wu Ting-Hsuan,wu04@example.edu,醫學生,Medical student,MS,PE,,student,六年級,TRUE
+U005,T80001,林承恩,Lin Cheng-En,lin05@example.edu,主治醫師,Attending physician,VS,IM,,teacher,,TRUE
+U006,T80002,趙宥翔,Chao Yu-Hsiang,chao06@example.edu,住院醫師,Resident,PGY,IM,,teacher,,TRUE
+U007,T80003,許家瑋,Hsu Chia-Wei,hsu07@example.edu,主治醫師,Attending physician,VS,SU,,teacher,,TRUE
+U008,T80004,鄭偉倫,Cheng Wei-Lun,cheng08@example.edu,主治醫師,Attending physician,VS,IM,,teacher,,TRUE
+U009,M70001,張佩琪,Chang Pei-Chi,chang09@example.edu,教學行政組長,Education admin lead,行政,IM,IM,"deptAdmin,hospital",,TRUE
+U010,M70002,黃淑芬,Huang Shu-Fen,huang10@example.edu,科部教學負責人,Dept. education director,VS,SU,SU,deptPromoter,,TRUE
+U011,M70000,系統管理員,System Admin,admin@example.edu,系統管理者,System administrator,管理者,EDU,,"sysAdmin,teacher",,TRUE

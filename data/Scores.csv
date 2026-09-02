@@ -1,0 +1,8 @@
+﻿score_id,trainee_staff_id,dept_code,academic_year,score,sub_weight_pct,status
+SC001,S90001,IM-CV,2026,88,40,ok
+SC002,S90001,IM-CH,2026,85,30,ok
+SC003,S90001,IM-NE,2026,68,30,watch
+SC004,S90001,SU-GS,2026,76,60,ok
+SC005,S90001,SU-OR,2026,59,40,danger
+SC006,S90001,TCM-AC,2026,91,100,ok
+SC007,S90001,PE,2026,83,100,ok

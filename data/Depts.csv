@@ -1,0 +1,13 @@
+﻿dept_code,dept_zh,dept_en,parent_code,is_sub,active
+IM,內科部,Internal Medicine,,FALSE,TRUE
+IM-CV,心臟系,Cardiology,IM,TRUE,TRUE
+IM-CH,胸腔系,Pulmonology,IM,TRUE,TRUE
+IM-NE,腎臟系,Nephrology,IM,TRUE,TRUE
+IM-GI,腸胃系,Gastroenterology,IM,TRUE,TRUE
+SU,外科部,Surgery,,FALSE,TRUE
+SU-GS,一般外科,General surgery,SU,TRUE,TRUE
+SU-OR,骨科,Orthopedics,SU,TRUE,TRUE
+TCM,中醫部,TCM,,FALSE,TRUE
+TCM-AC,針灸科,Acupuncture,TCM,TRUE,TRUE
+PE,小兒部,Pediatrics,,FALSE,TRUE
+EDU,教學部,Education Office,,FALSE,TRUE

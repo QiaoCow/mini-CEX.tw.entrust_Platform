@@ -1,0 +1,11 @@
+﻿change_id,change_set_id,target_type,target_id,field,before_value,after_value
+C0001,CS-0001,user,S90001,title,醫學生,PGY 第一年
+C0002,CS-0001,user,S90001,rank,MS,PGY1
+C0003,CS-0002,officer,O006,staff_id,,M70003
+C0004,CS-0002,officer,O006,dept_code,,IM
+C0005,CS-0002,officer,O006,active,,TRUE
+C0006,CS-0003,user,T80001,title,主治醫師,科主任
+C0007,CS-0003,user,M70002,dept_code,SU,EM
+C0008,CS-0004,evaluation,E0008,status,待評量,已評量
+C0009,CS-0004,evaluation,E0008,entrust_level,,3
+C0010,CS-0004,evaluation,E0008,suggestion,,心臟理學檢查步驟仍需依序完成。

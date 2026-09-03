@@ -1,4 +1,16 @@
-﻿log_id,timestamp,actor_staff_id,action_zh,action_en,target,device,ip
-L001,2026-09-02 09:41,M70001,匯出全院評量資料 342 筆,Exported 342 records,export:hospital,MacBook Pro 14 / macOS 15.4 / Chrome 141,10.21.44.108
-L002,2026-09-02 08:15,M70002,下載外科部評量清單 86 筆,Downloaded 86 Surgery records,export:SU,iPad Pro 11 / iPadOS 18.3 / Safari,10.21.51.66
-L003,2026-09-01 22:07,M70000,批次更新職稱 27 人,Batch-updated 27 titles,batch:title,ThinkPad X1 / Windows 11 / Edge 132,203.74.12.91
+﻿log_id,timestamp,session_id,actor_staff_id,actor_name,actor_role,category,action,target_type,target_id,result,fail_reason,change_set_id,device,user_agent,ip,source
+L0001,2026-09-02 08:02:11,S-a1b2c3,M70001,張佩琪,deptAdmin,auth,login,session,S-a1b2c3,success,,,MacBook Pro / macOS 15.4 / Chrome 141,Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7),10.21.44.108,web
+L0002,2026-09-02 08:05:40,S-a1b2c3,M70001,張佩琪,deptAdmin,read,view_dept_dashboard,dept,IM,success,,,MacBook Pro / macOS 15.4 / Chrome 141,Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7),10.21.44.108,web
+L0003,2026-09-02 08:11:03,S-a1b2c3,M70001,張佩琪,deptAdmin,export,export_evaluations,query,dept=IM;status=已評量;n=86,success,,,MacBook Pro / macOS 15.4 / Chrome 141,Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7),10.21.44.108,web
+L0004,2026-09-02 09:20:15,S-d4e5f6,M70000,系統管理員,sysAdmin,auth,login,session,S-d4e5f6,success,,,ThinkPad X1 / Windows 11 / Edge 132,Mozilla/5.0 (Windows NT 10.0; Win64; x64),203.74.12.91,web
+L0005,2026-09-02 09:24:38,S-d4e5f6,M70000,系統管理員,sysAdmin,write,update_user,user,S90001,success,,CS-0001,ThinkPad X1 / Windows 11 / Edge 132,Mozilla/5.0 (Windows NT 10.0; Win64; x64),203.74.12.91,web
+L0006,2026-09-02 09:31:02,S-d4e5f6,M70000,系統管理員,sysAdmin,write,assign_officer,officer,O006,success,,CS-0002,ThinkPad X1 / Windows 11 / Edge 132,Mozilla/5.0 (Windows NT 10.0; Win64; x64),203.74.12.91,web
+L0007,2026-09-02 09:35:47,S-d4e5f6,M70000,系統管理員,sysAdmin,write,send_reset_link,user,T80003,success,,,ThinkPad X1 / Windows 11 / Edge 132,Mozilla/5.0 (Windows NT 10.0; Win64; x64),203.74.12.91,web
+L0008,2026-09-02 09:52:10,S-d4e5f6,M70000,系統管理員,sysAdmin,write,batch_update,user,27 rows,success,,CS-0003,ThinkPad X1 / Windows 11 / Edge 132,Mozilla/5.0 (Windows NT 10.0; Win64; x64),203.74.12.91,web
+L0009,2026-09-02 10:03:29,S-g7h8i9,S90002,陳柏宇,student,auth,login_failed,session,,fail,密碼錯誤（第 2 次）,,iPhone 15 / iOS 18.3 / Safari,Mozilla/5.0 (iPhone; CPU iPhone OS 18_3),10.21.60.12,app
+L0010,2026-09-02 10:04:02,S-g7h8i9,S90002,陳柏宇,student,auth,login,session,S-g7h8i9,success,,,iPhone 15 / iOS 18.3 / Safari,Mozilla/5.0 (iPhone; CPU iPhone OS 18_3),10.21.60.12,app
+L0011,2026-09-02 10:06:55,S-g7h8i9,S90002,陳柏宇,student,export,download_pdf,evaluation,E0006,success,,,iPhone 15 / iOS 18.3 / Safari,Mozilla/5.0 (iPhone; CPU iPhone OS 18_3),10.21.60.12,app
+L0012,2026-09-02 10:12:31,S-g7h8i9,S90002,陳柏宇,student,auth,logout,session,S-g7h8i9,success,,,iPhone 15 / iOS 18.3 / Safari,Mozilla/5.0 (iPhone; CPU iPhone OS 18_3),10.21.60.12,app
+L0013,2026-09-02 11:40:18,S-j1k2l3,T80001,林承恩,teacher,auth,login,session,S-j1k2l3,success,,,Windows 11 / Chrome 141,Mozilla/5.0 (Windows NT 10.0; Win64; x64),10.21.33.75,web
+L0014,2026-09-02 11:48:26,S-j1k2l3,T80001,林承恩,teacher,write,submit_evaluation,evaluation,E0008,success,,CS-0004,Windows 11 / Chrome 141,Mozilla/5.0 (Windows NT 10.0; Win64; x64),10.21.33.75,web
+L0015,2026-09-02 14:30:00,SYS-cron,SYSTEM,排程作業,system,export,scheduled_export,query,monthly;n=342,success,,,Server / cron,-,10.0.0.4,server

@@ -49,11 +49,11 @@ function getSpreadsheet() {
 var SHEETS = [
   'Users', 'Depts', 'Evaluations', 'Rotations', 'Officers',
   'DeptWeights', 'Scores', 'GlobalScores', 'RubricFiles',
-  'ContentPages', 'AuditLogs', 'AuditChanges', 'ContentTasks'
+  'ContentPages', 'AuditLogs', 'AuditChanges', 'ContentTasks', 'Assessments'
 ];
 
 /** 稽核表為唯讀對外，只能透過 logEvent 寫入，不開放前端任意 append */
-var APPEND_ALLOWED = ['ContentTasks'];
+var APPEND_ALLOWED = ['ContentTasks', 'Assessments'];
 
 /** 讀取單一工作表，回傳物件陣列（第一列為欄名） */
 function readSheet(name) {
@@ -298,6 +298,15 @@ function doPost(e) {
       if (APPEND_ALLOWED.indexOf(name) === -1) throw new Error('此工作表不開放新增：' + name);
       var sh = getSpreadsheet().getSheetByName(name);
       if (!sh) throw new Error('找不到工作表：' + name);
+      // 身分欄位一律以後端取得的為準，忽略前端送來的值
+      if (name === 'Assessments') {
+        body.row.student_staff_id = me.staffId;
+        body.row.student_name = me.name;
+        body.row.form_id = nextId('F', 'Assessments', 'form_id');
+        body.row.applied_at = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd HH:mm:ss');
+        body.row.source = 'web';
+      }
+
       var header = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
       sh.appendRow(header.map(function (h) { return body.row[h] !== undefined ? body.row[h] : ''; }));
 
@@ -327,6 +336,13 @@ function doPost(e) {
         if (String(values[i][keyCol]) === String(body.keyValue)) { rowIndex = i; break; }
       }
       if (rowIndex < 0) throw new Error('找不到資料列：' + body.keyValue);
+
+      var own = canWriteRow(me, name2, body.keyValue, body.changes);
+      if (!own.ok) {
+        logEvent(actor, 'write', body.action || ('deny_update_' + name2), name2, body.keyValue,
+                 'fail', own.why, '');
+        return json({ ok: false, error: 'FORBIDDEN', message: own.why });
+      }
 
       var csId2 = nextId('CS', 'AuditChanges', 'change_set_id');
       var changed = 0;
@@ -363,7 +379,60 @@ function canWrite(roles, sheet) {
   if (has(roles, 'sysAdmin')) return true;
   if (sheet === 'Evaluations') return has(roles, 'teacher');
   if (sheet === 'ContentTasks') return isDeptScoped(roles) || has(roles, 'hospital');
+  if (sheet === 'Assessments') return has(roles, 'student') || has(roles, 'teacher');
   return false;
+}
+
+/**
+ * 逐列的所有權檢查。canWrite 只管「能不能碰這張表」，
+ * 這裡管「能不能碰這一列」。少了這一層，任何學員都能改別人的申請。
+ */
+function canWriteRow(me, sheet, keyValue, changes) {
+  if (has(me.roles, 'sysAdmin')) return { ok: true };
+  if (sheet !== 'Assessments') return { ok: true };
+
+  var sh = getSpreadsheet().getSheetByName('Assessments');
+  if (!sh) return { ok: false, why: '找不到工作表' };
+  var rows = readSheet('Assessments');
+  var row = null;
+  for (var i = 0; i < rows.length; i++) {
+    if (String(rows[i].form_id) === String(keyValue)) { row = rows[i]; break; }
+  }
+  if (!row) return { ok: false, why: '找不到該筆申請' };
+
+  var fields = Object.keys(changes || {});
+
+  // 學員：只能改自己的申請，且只能改醫療資訊三欄
+  if (String(row.student_staff_id) === me.staffId) {
+    var allowed = ['chart_no', 'location', 'condition', 'visit_at', 'status'];
+    for (var j = 0; j < fields.length; j++) {
+      if (allowed.indexOf(fields[j]) === -1) {
+        return { ok: false, why: '學員不可修改評量內容：' + fields[j] };
+      }
+    }
+    // 已評量後 7 日內才可修改
+    if (String(row.status) === '已評量') {
+      var days = (new Date() - new Date(row.assessed_at)) / 86400000;
+      if (days > 7) return { ok: false, why: '已評量超過 7 日，不可再修改' };
+    }
+    return { ok: true };
+  }
+
+  // 教師：只能評自己被指定的，且不可改學員填的醫療資訊
+  if (String(row.teacher_staff_id) === me.staffId) {
+    var blocked = ['chart_no', 'location', 'condition', 'student_staff_id', 'teacher_staff_id'];
+    for (var k = 0; k < fields.length; k++) {
+      if (blocked.indexOf(fields[k]) !== -1) {
+        return { ok: false, why: '教師不可修改學員填寫的醫療資訊：' + fields[k] };
+      }
+    }
+    if (String(row.status) === '未填寫') {
+      return { ok: false, why: '學員醫療資訊未填寫完整，無法進行評量' };
+    }
+    return { ok: true };
+  }
+
+  return { ok: false, why: '這筆申請與你無關' };
 }
 
 /** 寫入一筆事件到 AuditLogs。回傳 log_id */
@@ -445,6 +514,15 @@ var HEADERS = {
   RubricFiles: ['rubric_id', 'academic_year', 'track', 'file_name', 'file_url', 'updated_date'],
   ContentPages: ['page_id', 'kind', 'name_zh', 'name_en', 'enabled', 'body_url'],
   AuditLogs: ['log_id', 'timestamp', 'session_id', 'actor_staff_id', 'actor_name', 'actor_role', 'category', 'action', 'target_type', 'target_id', 'result', 'fail_reason', 'change_set_id', 'device', 'user_agent', 'ip', 'source'],
+  Assessments: [
+    'form_id', 'status', 'student_staff_id', 'student_name', 'student_rank',
+    'teacher_staff_id', 'teacher_name', 'teacher_rank',
+    'dept_code', 'sub_dept', 'applied_at', 'visit_at', 'assessed_at',
+    'chart_no', 'location', 'condition', 'item',
+    'complexity', 'entrust',
+    'r_interview', 'r_exam', 'r_procedure', 'r_counseling', 'r_judgment', 'r_efficiency', 'r_humanistic',
+    'phrases', 'narrative', 'source'
+  ],
   AuditChanges: ['change_id', 'change_set_id', 'target_type', 'target_id', 'field', 'before_value', 'after_value'],
   ContentTasks: ['task_id', 'created_at', 'insight_text', 'mention_count', 'dept_code', 'assignee_staff_id', 'status']
 };

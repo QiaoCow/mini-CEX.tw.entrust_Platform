@@ -1,0 +1,4 @@
+﻿form_id,status,student_staff_id,student_name,student_rank,teacher_staff_id,teacher_name,teacher_rank,dept_code,sub_dept,applied_at,visit_at,assessed_at,chart_no,location,condition,item,complexity,entrust,r_interview,r_exam,r_procedure,r_counseling,r_judgment,r_efficiency,r_humanistic,phrases,narrative,source
+F0001,待評量,S90001,王子安,MS,T80001,林承恩,VS,內科部,消化科,2026-09-01 09:12,2026-09-01 08:40,,9900001,病房,25 歲男性，腰痛,臨床看診(mini-CEX.tw),,,NA,NA,NA,NA,NA,NA,NA,,,app
+F0002,未填寫,S90002,陳柏宇,MS,T80001,林承恩,VS,內科部,心臟科,2026-09-01 14:05,2026-09-01 13:30,,,門診,,臨床看診(mini-CEX.tw),,,NA,NA,NA,NA,NA,NA,NA,,,web
+F0003,已評量,S90001,王子安,MS,T80001,林承恩,VS,內科部,新陳代謝科,2026-08-28 08:28,2026-08-28 08:00,2026-08-28 14:03,9900002,門診,58 歲女性，血糖控制不佳,臨床看診(mini-CEX.tw),MS,POST,ABOVE,MEET,NA,ABOVE,MEET,MEET,ABOVE,醫療面談（Above）　值得嘉許：從開放式問題開始；提問的順序合乎邏輯,優秀的表現，能給予完整的病史詢問、身體檢查、鑑別診斷和治療方向。,app

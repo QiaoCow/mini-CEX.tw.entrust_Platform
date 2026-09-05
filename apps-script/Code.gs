@@ -140,6 +140,7 @@ function handleRead(p) {
 
     // 依身分裁切。裁切在回傳之前完成，前端拿不到範圍外的資料。
     payload.Evaluations = scopeEvaluations(payload.Evaluations, me.roles, me.staffId, me.scopeDept);
+    payload.Assessments = scopeAssessments(payload.Assessments || [], me.roles, me.staffId, me.scopeDept);
     payload.Scores = scopeScores(payload.Scores, me.roles, me.staffId);
     payload.Users = scopeUsers(payload.Users, me.roles);
     // Depts 表若未建立或欄位不符，跨科統計會失敗。
@@ -276,6 +277,28 @@ function scopeEvaluations(rows, roles, staffId, scopeDept) {
   });
 }
 
+/**
+ * 評量申請：學員只見自己提出的，教師只見自己被指定的，科部限負責科含次專科。
+ * 病歷號僅對該筆的當事學員與指定教師顯示，其餘一律遮蔽。
+ */
+function scopeAssessments(rows, roles, staffId, scopeDept) {
+  var visible = rows.filter(function (r) {
+    if (isHospital(roles)) return true;
+    if (isDeptScoped(roles) && String(r.dept_code || '').indexOf(scopeDept) === 0) return true;
+    if (String(r.teacher_staff_id) === staffId) return true;
+    if (String(r.student_staff_id) === staffId) return true;
+    return false;
+  });
+  return visible.map(function (r) {
+    var own = String(r.student_staff_id) === staffId || String(r.teacher_staff_id) === staffId;
+    if (own) return r;
+    var copy = {};
+    Object.keys(r).forEach(function (k) { copy[k] = r[k]; });
+    copy.chart_no = r.chart_no ? '******' : '';
+    return copy;
+  });
+}
+
 /** 成績：學員只見自己的 */
 function scopeScores(rows, roles, staffId) {
   if (isHospital(roles) || isDeptScoped(roles)) return rows;
@@ -344,6 +367,14 @@ function handleWrite(contents) {
     var me = id.me;
     if (!me.active) return json({ ok: false, error: 'ACCOUNT_DISABLED', message: '此帳號已停用。' });
     var actor = actorOf(me, body);
+
+    // 前端以試用身分操作時會標記 demo。後端據此拒絕，
+    // 避免寫進來的資料掛在操作者本人名下卻顯示為試用身分，造成資料與畫面不符。
+    if (body.demo === true) {
+      logEvent(actor, 'write', 'deny_demo_write', body.sheet || '', body.keyValue || '',
+               'fail', '試用身分不可寫入', '');
+      return json({ ok: false, error: 'DEMO_IDENTITY', message: '試用身分不可寫入資料。' });
+    }
 
     // 寫入權限檢查。前端送什麼都不影響這裡的判斷。
     if ((op === 'append' || op === 'update') && !canWrite(me.roles, body.sheet)) {

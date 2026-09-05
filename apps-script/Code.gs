@@ -115,14 +115,19 @@ function scopeEvaluations(rows, role, staffId, scopeDeptCode) {
 function doGet(e) {
   var p = (e && e.parameter) || {};
 
-  // 沒帶 api 參數時，直接把前端網頁吐出來（同源，可取得登入身分）
+  // 沒帶 api 參數時，直接把前端網頁吐出來
   if (!p.api) return serveApp();
+  return handleRead(p);
+}
 
+function handleRead(p) {
+  p = p || {};
   try {
-    var me = getIdentity();
-    if (!me) {
-      return json({ ok: false, error: 'NOT_AUTHENTICATED', message: '請先以院內帳號登入。' });
+    var id = getIdentityDetailed();
+    if (!id.ok) {
+      return json({ ok: false, error: id.why, message: id.message });
     }
+    var me = id.me;
     if (!me.active) {
       return json({ ok: false, error: 'ACCOUNT_DISABLED', message: '此帳號已停用。' });
     }
@@ -137,7 +142,13 @@ function doGet(e) {
     payload.Evaluations = scopeEvaluations(payload.Evaluations, me.roles, me.staffId, me.scopeDept);
     payload.Scores = scopeScores(payload.Scores, me.roles, me.staffId);
     payload.Users = scopeUsers(payload.Users, me.roles);
-    payload.DeptStats = deptStatsFor(me.roles, me.scopeDept);
+    // Depts 表若未建立或欄位不符，跨科統計會失敗。
+    // 這只是附加資訊，不該讓整份資料載入失敗。
+    try {
+      payload.DeptStats = deptStatsFor(me.roles, me.scopeDept);
+    } catch (e) {
+      payload.DeptStats = [];
+    }
 
     if (canSeeAudit(me.roles)) {
       payload.AuditLogs = readSheet('AuditLogs');
@@ -157,38 +168,87 @@ function doGet(e) {
   }
 }
 
+/**
+ * 給前端 google.script.run 呼叫的讀取函式。
+ *
+ * 為什麼需要這兩支：Apps Script 提供的網頁跑在沙箱 iframe 中，
+ * 網頁裡的 fetch 打不到 /exec（相對路徑指向沙箱網域，絕對路徑則跨來源丟失登入狀態）。
+ * google.script.run 是該環境唯一可用的通道，因此 doGet 與 doPost 的邏輯
+ * 另外包成 apiRead 與 apiWrite 供其呼叫。
+ *
+ * 回傳字串而非物件，因為 google.script.run 對複雜物件的序列化限制較多。
+ */
+function apiRead(argJson) {
+  var p = {};
+  try { p = JSON.parse(argJson || '{}'); } catch (e) {}
+  return handleRead(p).getContent();
+}
+
+/** 給前端 google.script.run 呼叫的寫入函式 */
+function apiWrite(bodyJson) {
+  return handleWrite(bodyJson || '{}').getContent();
+}
+
 /** 把打包好的前端網頁送出。前端檔案存為 Apps Script 專案中的 index.html */
 function serveApp() {
   return HtmlService.createHtmlOutputFromFile('index')
     .setTitle('mini-CEX.tw.entrust')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1')
-    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.DEFAULT);
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 }
 
 /**
  * 取得目前登入者。
- * 必須部署為「執行身分：存取應用程式的使用者」才能取得 email。
- * 回傳 null 表示未登入或不在 Users 名冊中。
+ *
+ * 回傳三種結果，刻意分開，因為兩種失敗的處理方式完全不同：
+ *   { ok: true, me }            登入且在名冊中
+ *   { ok: false, why: 'NO_EMAIL' }   取不到 Google 帳號，通常是部署設定錯誤
+ *   { ok: false, why: 'NOT_IN_ROSTER', email }  有登入但 Users 表沒有這個信箱
  */
-function getIdentity() {
-  var email = Session.getActiveUser().getEmail();
-  if (!email) return null;
+function getIdentityDetailed() {
+  var email = '';
+  try { email = Session.getActiveUser().getEmail(); } catch (e) { email = ''; }
+
+  if (!email) {
+    return {
+      ok: false, why: 'NO_EMAIL',
+      message: '取不到你的 Google 帳號。請確認部署設定的「執行身分」為「存取應用程式的使用者」，' +
+               '且「具有存取權的使用者」不是「僅限我」。改完設定後必須以「新版本」重新部署才會生效。'
+    };
+  }
 
   var rows = readSheet('Users');
   for (var i = 0; i < rows.length; i++) {
-    if (String(rows[i].email || '').toLowerCase() === email.toLowerCase()) {
+    var e = String(rows[i].email || '').trim().toLowerCase();
+    if (e && e === email.toLowerCase()) {
       return {
-        email: email,
-        staffId: String(rows[i].staff_id || ''),
-        name: String(rows[i].name || ''),
-        roles: String(rows[i].roles || '').split(',').map(function (x) { return x.trim(); }).filter(Boolean),
-        dept: String(rows[i].dept_code || ''),
-        scopeDept: String(rows[i].scope_dept || rows[i].dept_code || ''),
-        active: String(rows[i].active || 'TRUE').toUpperCase() !== 'FALSE'
+        ok: true,
+        me: {
+          email: email,
+          staffId: String(rows[i].staff_id || ''),
+          // 欄位名稱同時容許 name 與 name_zh，避免與 CSV 範本不一致時整個對不上
+          name: String(rows[i].name_zh || rows[i].name || ''),
+          roles: String(rows[i].roles || '').split(',').map(function (x) { return x.trim(); }).filter(Boolean),
+          dept: String(rows[i].dept_code || ''),
+          scopeDept: String(rows[i].scope_dept_code || rows[i].scope_dept || rows[i].dept_code || ''),
+          active: String(rows[i].active === '' || rows[i].active === undefined ? 'TRUE' : rows[i].active).toUpperCase() !== 'FALSE'
+        }
       };
     }
   }
-  return null;
+
+  return {
+    ok: false, why: 'NOT_IN_ROSTER', email: email,
+    message: '你的帳號 ' + email + ' 不在 Users 工作表中。' +
+             '請在 Users 表新增一列，email 欄填入此信箱，並填好 staff_id、name_zh、roles 等欄位。' +
+             '（目前 Users 表共 ' + rows.length + ' 列）'
+  };
+}
+
+/** 相容既有呼叫。只需要「是誰」時用這支。 */
+function getIdentity() {
+  var r = getIdentityDetailed();
+  return r.ok ? r.me : null;
 }
 
 function has(roles, r) { return roles.indexOf(r) !== -1; }
@@ -270,13 +330,19 @@ function deptStatsFor(roles, scopeDept) {
  * 所有寫入一律留下稽核紀錄，無法略過。
  */
 function doPost(e) {
+  return handleWrite(e && e.postData ? e.postData.contents : '{}');
+}
+
+function handleWrite(contents) {
   try {
-    var body = JSON.parse(e.postData.contents || '{}');
+    var body = JSON.parse(contents || '{}');
     var op = body.op || 'log';
 
     // 身分由後端取得，忽略前端送來的 actor
-    var me = getIdentity();
-    if (!me || !me.active) return json({ ok: false, error: 'NOT_AUTHENTICATED' });
+    var id = getIdentityDetailed();
+    if (!id.ok) return json({ ok: false, error: id.why, message: id.message });
+    var me = id.me;
+    if (!me.active) return json({ ok: false, error: 'ACCOUNT_DISABLED', message: '此帳號已停用。' });
     var actor = actorOf(me, body);
 
     // 寫入權限檢查。前端送什麼都不影響這裡的判斷。
@@ -365,7 +431,7 @@ function doPost(e) {
     throw new Error('未知的 op：' + op);
   } catch (err) {
     try {
-      var b = JSON.parse(e.postData.contents || '{}');
+      var b = JSON.parse(contents || '{}');
       logEvent(b.actor || {}, 'write', b.action || 'unknown', b.sheet || '', b.keyValue || '',
                'fail', String(err), '');
     } catch (ignored) {}
@@ -547,6 +613,19 @@ function setupSheets() {
   } catch (e) {
     // 從編輯器直接執行時，改看「執行紀錄」即可
   }
+  return msg;
+}
+
+/**
+ * 診斷用：確認目前登入者能不能被辨識。
+ * 從編輯器執行只會看到指令碼擁有者的身分，真正的測試要從網頁進入。
+ */
+function testIdentity() {
+  var r = getIdentityDetailed();
+  var msg = r.ok
+    ? '辨識成功：' + r.me.name + '（' + r.me.staffId + '）角色：' + r.me.roles.join('、')
+    : '辨識失敗（' + r.why + '）：' + r.message;
+  Logger.log(msg);
   return msg;
 }
 
